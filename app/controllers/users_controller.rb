@@ -10,10 +10,12 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(:page => params[:page])
     @title = @user.name
   end
 
   def new
+   redirect_to(root_path) unless !signed_in?
    @user = User.new
    @title = "Sign up"
   end
@@ -52,9 +54,10 @@ class UsersController < ApplicationController
   
   private
   
-    def authenticate 
-      deny_access unless signed_in?
-    end
+    # This method is moved to session_helper
+    # def authenticate 
+    #  deny_access unless signed_in?
+    # end
     
     def correct_user
       @user = User.find(params[:id])
